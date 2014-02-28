@@ -4,33 +4,67 @@
 
 from lxml import html
 import requests
+import sys
 
-fileName = '/home/timbo/Documents/sample_recipes/minute_steak_with_romesco_salad.html'
-inputFile = open(fileName, 'r')
-tree = html.fromstring(inputFile.read())
+page = ''
+title = ''
+summary = ''
+prep_time = ''
+ingredients = []
+steps = []
 
-# Parse the properties etc.
-title = tree.xpath('//h1[@itemprop="name"]/text()')
-summary = tree.xpath('//p[@itemprop="summary"]/text()')
-prep_time = tree.xpath('//em[@itemprop="prepTime"]/text()')
+class TasteDotCom(object):
+	"""Parse Taste.com.au recipe into components"""
 
-# Parse the Ingredients
-ingredients = tree.xpath('//ul[@class="ingredient-table"]//span[@class="element"]/text()')
+	def __init__(self, url):
+		self.url = url
+		self.page = requests.get(self.url)
+		self.tree = html.fromstring(self.page.text)
 
-# Parse the steps
-steps = tree.xpath('//div[@class="content-item tab-content current method-tab-content"]/ol//li[@class="methods"]/p[@class="description"]//text()')
+		# Parse the properties etc.
+		self.title = self.tree.xpath('//h1[@itemprop="name"]/text()')[0]
+		self.summary = self.tree.xpath('//p[@itemprop="summary"]/text()')[0]
+		self.prep_time = self.tree.xpath('//em[@itemprop="prepTime"]/text()')[0]
 
-print title[0]
-print summary[0]
-print prep_time[0]
+		# Parse the Ingredients
+		self.ingredients = self.tree.xpath('//ul[@class="ingredient-table"]//span[@class="element"]/text()')
 
-print "\n", "Ingredients:", "\n"
+		# Parse the steps
+		self.steps = self.tree.xpath('//div[@class="content-item tab-content current method-tab-content"]/ol//li[@class="methods"]/p[@class="description"]//text()')
 
-for i in ingredients:
-	print i	
+	def printDetails(self):
+		"""Print the details of the parsed recepe to the console"""	
+		print self.title
+		print self.summary
+		print self.prep_time
 
-print "\n", "Method:", "\n"
-count = 0
-for s in steps:
-	print count, '.', '\t', s.lstrip().rstrip()
-	count += 1
+		print "\n", "Ingredients:", "\n"
+
+		for i in self.ingredients:
+			print i	
+
+		print "\n", "Method:", "\n"
+		count = 0
+		for s in self.steps:
+			print count, '.', '\t', s.lstrip().rstrip()
+			count += 1
+
+	def getJSON(self):
+		"""Get JSON Object for this Recipe"""
+		jsonText =  '{\"title\":\"' + self.title + '\"'
+		jsonText += '{\"summary\":\"' + self.summary + '\"'
+		jsonText += '{\"preparation time\":\"' + self.prep_time + '\"'
+		# Ingredients
+		jsonText += '{\"ingredients\":['
+		for i in self.ingredients:
+			jsonText += '"' + i + '",'
+		# Remove the trailing comma
+		jsonText = jsonText.rstrip(1)
+		jsonText += ']'
+		jsonText += '},'
+
+		jsonText += '}'
+		jsonText += '}'
+		jsonText += '}'
+		return jsonText
+

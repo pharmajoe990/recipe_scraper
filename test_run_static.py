@@ -14,4 +14,6 @@ fileName = sys.argv[1]
 
 parser = TasteDotComStatic(fileName)
 
-parser.printDetails()
+# parser.printDetails()
+
+print parser.getJSON()
