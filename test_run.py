@@ -15,3 +15,5 @@ testUrl = 'http://www.taste.com.au/recipes/34764/steak+sandwich+salad'
 parser = TasteDotCom(testUrl)
 
 parser.printDetails()
+
+print parser.getJSON()

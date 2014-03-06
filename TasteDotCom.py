@@ -51,20 +51,24 @@ class TasteDotCom(object):
 
 	def getJSON(self):
 		"""Get JSON Object for this Recipe"""
-		jsonText =  '{\"title\":\"' + self.title + '\"'
-		jsonText += '{\"summary\":\"' + self.summary + '\"'
-		jsonText += '{\"preparation time\":\"' + self.prep_time + '\"'
+		jsonText =  '{\"title\":\"' + self.title + '\",'
+		jsonText += '\"summary\":\"' + self.summary + '\",'
+		jsonText += '\"preparation time\":\"' + self.prep_time + '\",'		
 		# Ingredients
-		jsonText += '{\"ingredients\":['
+		jsonText += '\"ingredients\":['
 		for i in self.ingredients:
-			jsonText += '"' + i + '",'
-		# Remove the trailing comma
-		jsonText = jsonText.rstrip(1)
+			jsonText += '\"' + i + '\",'
+		jsonText = jsonText[:-1]
 		jsonText += ']'
-		jsonText += '},'
-
+		jsonText += ','
+		# Now add the steps to create
+		jsonText += '\"steps\":['
+		for s in self.steps:
+			jsonText += '\"' + s + '\",'
+		jsonText = jsonText[:-1]
+		jsonText += ']'
 		jsonText += '}'
-		jsonText += '}'
-		jsonText += '}'
+		# jsonText += ''
+		# jsonText += ''
 		return jsonText
 
