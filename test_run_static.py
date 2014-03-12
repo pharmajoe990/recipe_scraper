@@ -5,10 +5,8 @@
 from TasteDotComStatic import *
 
 if len(sys.argv) != 2:
-	print 'Please specify a URL as argument.'
+	print 'Please specify an HTML file as argument.'
 	sys.exit()
-
-testUrl = sys.argv[1]
 
 fileName = sys.argv[1]
 
