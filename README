@@ -1,0 +1,2 @@
+# H3
+This program is intended to scrape a recipe from various websites (at the moment only taste.com.au is implemented). It is eventually intended to transform the recipe into JSON for storage in mongoDB.
