@@ -8,5 +8,5 @@ conn = None
 
 class MongoHandler(object):
 	"""Handles various functions related to mongoDB"""
-	def __init__(self, host_name, port, collection):
-		conn = Database(MongoClient(host_name, port), collection)
+	def __init__(self, host_name, port):
+		client = MongoClient(host_name, port)
