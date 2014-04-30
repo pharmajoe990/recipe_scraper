@@ -3,13 +3,6 @@
 from lxml import html
 import requests
 
-page = ''
-title = ''
-summary = ''
-prep_time = ''
-ingredients = []
-steps = []
-
 
 class TasteDotCom(object):
     """Parse Taste.com.au recipe into components"""
