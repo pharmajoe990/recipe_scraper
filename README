@@ -1,3 +1,17 @@
 # Introduction
-This program is intended to scrape a recipe from various websites (at the moment only taste.com.au is implemented).
-It is eventually intended to transform the recipe into JSON for storage in mongoDB.
+This program combines a simple Web Crawler and Scraper to extract data for Recipes from various sites. The Web
+crawler starts with a base URL for the domain, and will crawl the site looking for individual recipes, extract the
+data about these and persist them (this component not added yet).
+
+# Functionality to be finished
+    -Convert to Test-Driven codebase
+    -Write the Web Crawler component
+    -Add some kind of persistence provision; to file, database etc.
+
+Components:
+
+    ./crawler/  Code for the Web Crawler components
+
+    ./scraper/  Code for the page/data scraper components
+
+    ./miscellany/   miscellaneous other bits and pieces such as configuration files and example documents/data etc.

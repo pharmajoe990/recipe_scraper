@@ -1,7 +1,5 @@
 #! /usr/bin/env python
 
-# Parse an html recipe file into it's specific content
-
 from lxml import html
 import requests
 
@@ -17,10 +15,22 @@ class TasteDotCom(object):
     """Parse Taste.com.au recipe into components"""
 
     def __init__(self, url):
-        self.url = url
-        self.page = requests.get(self.url)
-        self.tree = html.fromstring(self.page.text)
+        if url != '':
+            self.url = url
+            self.page = requests.get(self.url)
+            self.tree = html.fromstring(self.page.text)
 
+            self.title = ''
+            self.summary = ''
+            self.prep_time = ''
+            self.ingredients = []
+            self.steps = []
+
+            # Now parse the attributes
+            self.parse_attributes()
+
+    def parse_attributes(self):
+        """Parse the html document into Recipe components"""
         # Parse the properties etc.
         self.title = self.tree.xpath('//h1[@itemprop="name"]/text()')[0]
         self.summary = self.tree.xpath('//p[@itemprop="summary"]/text()')[0]
