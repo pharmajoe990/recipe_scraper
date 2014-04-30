@@ -12,9 +12,6 @@ The Crawler operates thus
 1.  Send request for the base URL which will be the parent page of all children.
 2.  Parse the document at the base URL for any child pages in the base URL.
 3.  Parse the child pages, one at a time, for any further child pages up to the specified depth.
-
-small change
-
 """
 
 
