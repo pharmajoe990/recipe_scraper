@@ -73,4 +73,3 @@ class TasteDotCom(object):
         # json_text += ''
         # json_text += ''
         return json_text
-
