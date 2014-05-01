@@ -14,10 +14,27 @@ The Crawler operates thus
 3.  Parse the child pages, one at a time, for any further child pages up to the specified depth.
 """
 
+import requests
+
 
 class Crawler(object):
 
     def __init__(self, base_page, crawl_depth, children):
+        self.urls = None
         self.base_url = base_page
         self.depth = crawl_depth
         self.children = children
+
+    def run(self):
+        """
+        Start Crawling the page specified
+        """
+        print "Starting crawl session for", self.base_url
+        page = requests.get(self.base_url).text
+        # For each child, find children then check for children until max then go to next parent
+        
+    def get_urls(page):
+        """
+        Parse an html page and retrieve the URLs (hyperlinks) that exist in it  
+        """
+        pass
