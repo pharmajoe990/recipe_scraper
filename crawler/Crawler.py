@@ -17,6 +17,7 @@ The Crawler operates thus
 
 class Crawler(object):
 
-    def __init__(self, basepage, crawl_depth, children):
-        self.base_url = basepage
+    def __init__(self, base_page, crawl_depth, children):
+        self.base_url = base_page
         self.depth = crawl_depth
+        self.children = children
