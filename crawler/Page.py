@@ -7,10 +7,7 @@ import re
 def get_urls(html):
     """
     Parse the html passed to this method and find all the URLs or
-    Hyperlinks within the markup.
+    Hyperlinks within the markup. This includes all links, such
+    as images and other URLs (not restricted).
     """
     return re.findall(r'http://www\.[//\a\w\.\+]+', html)
-
-
-# class Page(object):
-#     pass
