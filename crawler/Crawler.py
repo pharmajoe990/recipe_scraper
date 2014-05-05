@@ -26,6 +26,12 @@ class Crawler(object):
         self.base_url = base_page
         self.depth = crawl_depth
 
+    def check_and_add(self, url):
+        # Check if the URL matches a pattern for a recipe.
+        if re.match(r'http://www.taste.com.au/recipes/\d+/[\w+]+', url):
+            if url not in self.urls:
+                self.urls.append(url)
+
     def run(self):
         """
         Start Crawling the page specified
@@ -34,8 +40,5 @@ class Crawler(object):
         page = requests.get(self.base_url).text
         child_urls = Page.get_urls(page)
         for url in child_urls:
-            # Check if the URL matches a pattern for a recipe.
-            if re.match(r'http://www.taste.com.au/recipes/\d+/[\w+]+', url):
-                if url not in self.urls:
-                    self.urls.append(url)
+            self.check_and_add(url)
 
