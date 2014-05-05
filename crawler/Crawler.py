@@ -22,10 +22,11 @@ from crawler import Page
 
 
 class Crawler(object):
-    def __init__(self, base_page, crawl_depth):
+    def __init__(self, base_page, crawl_depth, children):
         self.urls = []
         self.base_url = base_page
         self.depth = crawl_depth
+        self.children = children
 
     def check_and_add(self, url):
         # Check if the URL matches a pattern for a recipe.
@@ -39,7 +40,7 @@ class Crawler(object):
         """
         current_depth = 1
         page = requests.get(self.base_url).text
-        self.urls = Page.get_urls(page)[:15]
+        self.urls = Page.get_urls(page)[:self.children]
         scanned_urls = []
         while current_depth <= self.depth:
             # Append the links for each page then search it for more
@@ -50,13 +51,12 @@ class Crawler(object):
                     print 'Looking for child URLs in ', url
                     markup = requests.get(url).text
                     scanned_urls.append(url)
-                    new_pages = Page.get_urls(markup)[:15]
-            print 'Added', len(new_pages), 'new pages from', url
+                    new_pages = Page.get_urls(markup)[:self.children]
+            print 'Found', len(new_pages), 'new pages'
             # Below is adding the whole list. Not appending
             self.urls += new_pages
             current_depth += 1
         print 'Finished crawling', self.base_url, 'found', len(self.urls), 'total URLs'
-
 
     def run(self):
         """
