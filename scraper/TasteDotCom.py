@@ -23,6 +23,7 @@ class TasteDotCom(object):
     def parse_attributes(self):
         """Parse the html document into Recipe components"""
         # Parse the properties etc.
+        #todo Handle errors, eg. cannot parse title, summary etc.
         self.title = self.tree.xpath('//h1[@itemprop="name"]/text()')[0]
         self.summary = self.tree.xpath('//p[@itemprop="summary"]/text()')[0]
         self.prep_time = self.tree.xpath('//em[@itemprop="prepTime"]/text()')[0]
