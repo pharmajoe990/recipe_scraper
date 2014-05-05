@@ -11,19 +11,20 @@ base_url
 The Crawler operates thus
 1.  Send request for the base URL which will be the parent page of all children.
 2.  Parse the document at the base URL for any child pages in the base URL.
-3.  Parse the child pages, one at a time, for any further child pages up to the specified depth.
+3.  Parse the child pages, one at a time, for any further child pages up to the
+    specified depth.
 """
+import re
 
 import requests
+from crawler import Page
 
 
 class Crawler(object):
-
-    def __init__(self, base_page, crawl_depth, children):
-        self.urls = None
+    def __init__(self, base_page, crawl_depth):
+        self.urls = []
         self.base_url = base_page
         self.depth = crawl_depth
-        self.children = children
 
     def run(self):
         """
@@ -31,10 +32,9 @@ class Crawler(object):
         """
         print "Starting crawl session for", self.base_url
         page = requests.get(self.base_url).text
-        # For each child, find children then check for children until max then go to next parent
-        
-    def get_urls(page):
-        """
-        Parse an html page and retrieve the URLs (hyperlinks) that exist in it  
-        """
-        pass
+        child_urls = Page.get_urls(page)
+        for url in child_urls:
+            # Check if the URL matches a pattern for a recipe.
+            if re.match(r'http://www.taste.com.au/recipes/\d+/[\w+]+', url):
+                self.urls.append(url)
+
