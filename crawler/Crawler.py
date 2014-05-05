@@ -17,6 +17,7 @@ The Crawler operates thus
 import re
 
 import requests
+
 from crawler import Page
 
 
@@ -31,6 +32,31 @@ class Crawler(object):
         if re.match(r'http://www.taste.com.au/recipes/\d+/[\w+]+', url):
             if url not in self.urls:
                 self.urls.append(url)
+
+    def build_crawl_list(self):
+        """
+        Build a list of all of the URLs based on the depth specified.
+        """
+        current_depth = 1
+        page = requests.get(self.base_url).text
+        self.urls = Page.get_urls(page)[:15]
+        scanned_urls = []
+        while current_depth <= self.depth:
+            # Append the links for each page then search it for more
+            print 'Starting crawl depth', current_depth, 'with', len(self.urls), 'URLs to scan'
+            new_pages = []
+            for url in self.urls:
+                if url not in scanned_urls:
+                    print 'Looking for child URLs in ', url
+                    markup = requests.get(url).text
+                    scanned_urls.append(url)
+                    new_pages = Page.get_urls(markup)[:15]
+            print 'Added', len(new_pages), 'new pages from', url
+            # Below is adding the whole list. Not appending
+            self.urls += new_pages
+            current_depth += 1
+        print 'Finished crawling', self.base_url, 'found', len(self.urls), 'total URLs'
+
 
     def run(self):
         """

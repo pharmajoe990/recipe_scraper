@@ -1,6 +1,7 @@
 """
 Run the program.
 """
+import pprint
 from crawler.Crawler import Crawler
 from scraper.TasteDotCom import TasteDotCom
 
@@ -9,8 +10,6 @@ page = "http://www.taste.com.au/"
 depth = 3
 
 crawler = Crawler(page, depth)
-crawler.run()
-for recipe_url in crawler.urls:
-    t = TasteDotCom(recipe_url)
-    print 'Scraping details for', t.title
-    # t.print_details()
+crawler.build_crawl_list()
+pp = pprint.PrettyPrinter(indent=4)
+pp.pprint(crawler.urls)
