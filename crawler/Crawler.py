@@ -36,5 +36,6 @@ class Crawler(object):
         for url in child_urls:
             # Check if the URL matches a pattern for a recipe.
             if re.match(r'http://www.taste.com.au/recipes/\d+/[\w+]+', url):
-                self.urls.append(url)
+                if url not in self.urls:
+                    self.urls.append(url)
 
