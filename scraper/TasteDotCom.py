@@ -1,3 +1,4 @@
+import re
 from lxml import html
 import requests
 
@@ -17,8 +18,11 @@ class TasteDotCom(object):
             self.ingredients = []
             self.steps = []
 
-            # Now parse the attributes
-            self.parse_attributes()
+            # Now parse the attributes (if it is a valid recipe page)
+            if is_recipe_url(url):
+                self.parse_attributes()
+            else:
+                print 'Skipping', url, ' as it doesn\'t fit the pattern for a recipe'
 
     def parse_attributes(self):
         """Parse the html document into Recipe components"""
@@ -75,3 +79,24 @@ class TasteDotCom(object):
         # json_text += ''
         # json_text += ''
         return json_text
+
+
+def is_recipe_url(url):
+    """
+    Check if the url is valid, ie. matches the required format of a URL that can be scraped for data.
+    """
+    if re.match(r'http://www.taste.com.au/recipes/\d+/[\w+]+', url):
+        return True
+    else:
+        return False
+
+
+def is_wanted_object(url):
+    """
+    Check if the object is something we want; we don't want images, xml etc. This is for use in the Crawler logic,
+    where we don't want to crawl objects that won't have markup to crawl for links or scrape data from.
+    """
+    if re.match(r'http://www.taste.com.au/[\w/]+.(jpg|png|ico|xml)$', url):
+        return False
+    else:
+        return True

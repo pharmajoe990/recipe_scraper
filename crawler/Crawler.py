@@ -22,6 +22,16 @@ import re
 import requests
 
 from crawler import Page
+from scraper import TasteDotCom
+
+
+def get_urls(html):
+    """
+    Parse the html passed to this method and find all the URLs or
+    Hyperlinks within the markup. This includes all links, such
+    as images and other URLs (not restricted).
+    """
+    return re.findall(r'http://www\.[//\a\w\.\+]+', html)
 
 
 class Crawler(object):
@@ -41,50 +51,40 @@ class Crawler(object):
             self.urls = Page.get_urls(page)[:self.children]
         else:
             self.urls = Page.get_urls(page)
-        # Below stops URLs being added twice
+        # Below list holds previously scanned URLs, to stop URLs being added twice
         scanned_urls = []
         while current_depth <= self.depth:
             # Append the links for each page then search it for more
             print 'Starting crawl depth', current_depth, 'with', len(self.urls), 'URLs to scan'
             new_urls = []
             for url in self.urls:
-                #todo Don't bother scanning images, css etc.
+                # If the url is not already scanned, and if it is not an image, xml etc. scan it.
                 if url not in scanned_urls:
-                    print 'Looking for child URLs in ', url
-                    markup = requests.get(url).text
-                    scanned_urls.append(url)
-                    if self.children > 0:
-                        new_urls = Page.get_urls(markup)[:self.children]
-                    else:
-                        new_urls = Page.get_urls(markup)
+                    if TasteDotCom.is_wanted_object(url):
+                        print 'Looking for child URLs in ', url
+                        markup = requests.get(url).text
+                        scanned_urls.append(url)
+                        if self.children > 0:
+                            new_urls = Page.get_urls(markup)[:self.children]
+                        else:
+                            new_urls = Page.get_urls(markup)
             print 'Found', len(new_urls), 'new pages'
-            for url in new_urls:
-                self.check_and_add(url)
-            # self.urls += new_urls
+            # for url in new_urls:
+            #     check_and_add(url)
+            self.urls += new_urls
             current_depth += 1
         print 'Finished crawling', self.base_url, 'found', len(self.urls), 'total URLs'
 
-    def get_urls(html):
-        """
-        Parse the html passed to this method and find all the URLs or
-        Hyperlinks within the markup. This includes all links, such
-        as images and other URLs (not restricted).
-        """
-        return re.findall(r'http://www\.[//\a\w\.\+]+', html)
+    # def run(self):
+    #     """
+    #     Start Crawling the page specified
+    #     """
+    #     #todo Make use of this method
+    #     print "Starting crawl session for", self.base_url
+    #     page = requests.get(self.base_url).text
+    #     child_urls = Page.get_urls(page)
+    #     for url in child_urls:
+    #         self.check_and_add(url)
 
-    def check_and_add(self, url):
-        # Check if the URL matches a pattern for a recipe.
-        if re.match(r'http://www.taste.com.au/recipes/\d+/[\w+]+', url):
-            if url not in self.urls:
-                self.urls.append(url)
-
-    def run(self):
-        """
-        Start Crawling the page specified
-        """
-        print "Starting crawl session for", self.base_url
-        page = requests.get(self.base_url).text
-        child_urls = Page.get_urls(page)
-        for url in child_urls:
-            self.check_and_add(url)
-
+# def check_and_add(url):
+#     pass
